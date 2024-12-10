@@ -1,13 +1,17 @@
 // SettingsPage.tsx
 import React, { useState } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Modal, message } from 'antd';
-// import './SettingsPage.css'; // Optional: Add custom styling
+import { signOut } from 'aws-amplify/auth';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+// import { useAuth } from '../hooks/useAuth';
 
 const { Title } = Typography;
 
 const SettingsPage: React.FC = () => {
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [isDeletingFiles, setIsDeletingFiles] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
+  // const {hideLoginPopup} = useAuth();
 
   const handleEmailUpdate = (values: { email: string }) => {
     console.log('Updated email:', values.email);
@@ -25,8 +29,21 @@ const SettingsPage: React.FC = () => {
     message.success('All files deleted successfully');
   };
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      message.success('Logged out successfully');
+      navigate('/'); // Redirect to the home route
+      // hideLoginPopup(); // Ensure login popup state is reset
+    } catch (error) {
+      console.error('Error signing out:', error);
+      message.error('Failed to sign out. Please try again.');
+    }
+  };
+  
+
   return (
-    <div className="settings-page">
+    <div className="settings-page" style={{ height: '100%' }}>
       <Title level={2} style={{ textAlign: 'center', marginBottom: '24px' }}>
         Settings
       </Title>
@@ -87,6 +104,18 @@ const SettingsPage: React.FC = () => {
       >
         <p>Are you sure you want to delete your account? This action cannot be undone.</p>
       </Modal>
+
+      <Row justify="center" style={{ marginTop: '32px' }}>
+        <Col xs={24} sm={16} md={12}>
+          <Button
+            type="default"
+            style={{ width: '100%' }}
+            onClick={handleSignOut}
+          >
+            Logout
+          </Button>
+        </Col>
+      </Row>
     </div>
   );
 };

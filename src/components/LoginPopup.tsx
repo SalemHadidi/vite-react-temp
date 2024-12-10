@@ -1,111 +1,43 @@
-// LoginPopup.tsx
-import React, { useState } from 'react';
-import { Modal, Tabs, Form, Input, Button, message } from 'antd';
-// import './LoginPopup.css'; // Optional: Add custom styling
-
-const { TabPane } = Tabs;
+import React, { useEffect } from "react";
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import { Modal } from 'antd';
+import { useAuth } from "../hooks/useAuth";
 
 interface LoginPopupProps {
-  onClose: () => void;
+  onClose: () => void; // Function type
 }
 
 const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
-  const [loading, setLoading] = useState(false);
+  const {isAuthenticated} = useAuth();
 
-  const handleLogin = (values: { email: string; password: string }) => {
-    setLoading(true);
-    console.log('Login data:', values);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      message.success('Login successful');
-      onClose();
-    }, 1500);
-  };
-
-  const handleSignup = (values: { email: string; password: string; confirmPassword: string }) => {
-    if (values.password !== values.confirmPassword) {
-      message.error('Passwords do not match');
-      return;
+  useEffect(() => {
+    if (isAuthenticated) {
+        onClose();
     }
-    setLoading(true);
-    console.log('Signup data:', values);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      message.success('Signup successful');
-      onClose();
-    }, 1500);
-  };
+}, [isAuthenticated, onClose]);
+
 
   return (
     <Modal
-      title="Welcome to AI PDF Assistant"
-      visible={true}
-      onCancel={onClose}
+      open={true}
       footer={null}
+      onCancel={onClose}
+      destroyOnClose={true}
+      centered
+      width={'fit-content'}
     >
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="Login" key="1">
-          <Form layout="vertical" onFinish={handleLogin}>
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
-            >
-              <Input placeholder="Enter your email" />
-            </Form.Item>
-
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[{ required: true, message: 'Please enter your password' }]}
-            >
-              <Input.Password placeholder="Enter your password" />
-            </Form.Item>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Login
-              </Button>
-            </Form.Item>
-          </Form>
-        </TabPane>
-
-        <TabPane tab="Sign Up" key="2">
-          <Form layout="vertical" onFinish={handleSignup}>
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
-            >
-              <Input placeholder="Enter your email" />
-            </Form.Item>
-
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[{ required: true, message: 'Please enter your password' }]}
-            >
-              <Input.Password placeholder="Enter your password" />
-            </Form.Item>
-
-            <Form.Item
-              label="Confirm Password"
-              name="confirmPassword"
-              rules={[{ required: true, message: 'Please confirm your password' }]}
-            >
-              <Input.Password placeholder="Confirm your password" />
-            </Form.Item>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Sign Up
-              </Button>
-            </Form.Item>
-          </Form>
-        </TabPane>
-      </Tabs>
+      <div style={{ width: 'fit-content', padding: '19px' }}>
+        <Authenticator
+          components={{
+            SignIn: {
+              Footer() {
+                return null; // Customize footer if needed
+              },
+            },
+          }}
+        />
+      </div>
     </Modal>
   );
 };

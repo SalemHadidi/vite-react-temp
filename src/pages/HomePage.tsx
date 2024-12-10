@@ -14,7 +14,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="home-page">
-      <Row justify="center" align="middle" style={{ minHeight: '100vh', textAlign: 'center' }}>
+      <Row justify="center" align="middle" style={{ minHeight: '100%', textAlign: 'center' }}>
         <Col span={24}>
           <Title>Welcome to AI-Powered PDF Assistant</Title>
           <Paragraph>

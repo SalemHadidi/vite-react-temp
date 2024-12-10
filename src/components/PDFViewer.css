@@ -1,0 +1,19 @@
+.rpv-core__viewer {
+    display: flex;
+    flex-direction: column;
+    height: '100%'; /* Use 100% of the container's height */
+    box-sizing: border-box; /* Include padding and border in the height calculation */
+}
+
+.toolbar-container {
+    align-items: center;
+    background-color: #eeeeee;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    padding: 0.25rem;
+}
+
+.viewer-container {
+    flex: 1; /* Allow this section to take all available space */
+    overflow: hidden; /* Prevent overflow */
+}

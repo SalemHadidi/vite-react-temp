@@ -31,7 +31,7 @@ const plans = [
 
 const PlanPage: React.FC = () => {
   return (
-    <div className="plan-page">
+    <div className="plan-page" style={{ height: "100%"}}>
       <Title level={2} style={{ textAlign: 'center', marginBottom: '24px' }}>
         Choose Your Plan
       </Title>

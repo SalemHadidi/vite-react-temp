@@ -1,8 +1,6 @@
-// Import necessary libraries
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Layout, Menu } from 'antd';
-import { HomeOutlined, FileTextOutlined, SettingOutlined, DollarOutlined, MessageOutlined } from '@ant-design/icons';
+import React, {useEffect} from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Layout } from 'antd';
 import HomePage from './pages/HomePage';
 import DocumentsPage from './pages/DocumentsPage';
 import ChatPage from './pages/ChatPage';
@@ -10,54 +8,61 @@ import PlanPage from './pages/PlanPage';
 import SettingsPage from './pages/SettingsPage';
 import LoginPopup from './components/LoginPopup';
 import { useAuth } from './hooks/useAuth';
+import Sidebar from './components/Sidebar'
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 const App: React.FC = () => {
-  const [collapsed, setCollapsed] = React.useState(false);
-  const { isAuthenticated, loginPopupVisible, showLoginPopup } = useAuth();
+  const { isAuthenticated, loginPopupVisible, showLoginPopup, hideLoginPopup} = useAuth(); 
+
+  useEffect(() => {
+    if (isAuthenticated){
+      hideLoginPopup();
+    }
+  }, [isAuthenticated, hideLoginPopup]);
+
+  
+  const ProtectedRoute = ({ element }: { element: React.ReactNode }) => {
+    if (isAuthenticated) {
+      return <>{element}</>;
+    } else {
+      showLoginPopup();
+      return null; // Prevent rendering the page
+    }
+  };
 
   return (
     <Router>
-      <Layout style={{ minHeight: '100vh' }}>
-        {/* Sidebar Navigation */}
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-            <Menu.Item key="1" icon={<HomeOutlined />}>
-              <a href="/">Home</a>
-            </Menu.Item>
-            <Menu.Item key="2" icon={<FileTextOutlined />}>
-              <a href="/documents">Documents</a>
-            </Menu.Item>
-            <Menu.Item key="3" icon={<MessageOutlined />}>
-              <a href="/chat">Chat</a>
-            </Menu.Item>
-            <Menu.Item key="4" icon={<DollarOutlined />}>
-              <a href="/plan">Plan</a>
-            </Menu.Item>
-            <Menu.Item key="5" icon={<SettingOutlined />}>
-              <a href="/settings">Settings</a>
-            </Menu.Item>
-          </Menu>
-        </Sider>
+      <Layout style={{ height: '100vh' }}>
+        <Sidebar />
 
         {/* Main Content */}
-        <Layout>
-          <Content style={{ margin: '16px' }}>
+        <Layout style={{ overflow: 'hidden' }}>
+          <Content
+            style={{
+              margin: '16px',
+              padding: '16px',
+              background: '#fff',
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              flexGrow: 1,
+            }}
+          >
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route
                 path="/documents"
-                element={isAuthenticated ? <DocumentsPage /> : <Navigate to="/" />}
+                element={<ProtectedRoute element={<DocumentsPage />} />}
               />
               <Route
                 path="/chat"
-                element={isAuthenticated ? <ChatPage /> : <Navigate to="/" />}
+                element={<ProtectedRoute element={<ChatPage />} />}
               />
               <Route path="/plan" element={<PlanPage />} />
               <Route
                 path="/settings"
-                element={isAuthenticated ? <SettingsPage /> : <Navigate to="/" />}
+                element={<ProtectedRoute element={<SettingsPage />} />}
               />
             </Routes>
           </Content>
@@ -65,7 +70,7 @@ const App: React.FC = () => {
       </Layout>
 
       {/* Login Popup */}
-      {loginPopupVisible && <LoginPopup onClose={showLoginPopup} />}
+      {!isAuthenticated && loginPopupVisible && <LoginPopup onClose={hideLoginPopup}/>}
     </Router>
   );
 };

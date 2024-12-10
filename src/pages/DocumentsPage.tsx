@@ -59,7 +59,7 @@ const DocumentsPage: React.FC = () => {
   };
 
   return (
-    <div className="documents-page">
+    <div className="documents-page" style={{ height: "100%"}}>
       <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
         <Col>
           <Title level={2}>Your Documents</Title>
