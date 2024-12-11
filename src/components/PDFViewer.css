@@ -15,5 +15,5 @@
 
 .viewer-container {
     flex: 1; /* Allow this section to take all available space */
-    overflow: hidden; /* Prevent overflow */
+    overflow: hidden; 
 }

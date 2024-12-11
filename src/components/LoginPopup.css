@@ -1,0 +1,25 @@
+.custom-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 90vw; /* Prevent overflow */
+    width: fit-content !important; /* Ensure width adapts to content */
+    padding: 0;
+  }
+  
+  .modal-content-wrapper {
+    display: inline-block; /* Prevent unnecessary stretching */
+    width: fit-content;
+    max-width: 100%; /* Ensure content stays within viewport */
+    overflow: auto; /* Handle any content overflow gracefully */
+    padding: 0;
+  }
+  
+  .ant-modal-body {
+    padding: 0 !important; /* Remove default padding */
+  }
+  
+  .ant-modal {
+    padding: 0; /* Ensure no external padding */
+  }
+  
